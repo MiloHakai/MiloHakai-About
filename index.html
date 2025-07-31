@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MiloHakai</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fontsource/cascadia-code@4.2.1/index.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    
     :root {
       --bg-dark: #0a0a0a;
       --bg-light: #fdfdfd;
@@ -22,7 +22,7 @@
     html, body {
       margin: 0;
       height: 100%;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Press Start 2P', monospace;
       overflow: hidden;
     }
 
@@ -205,15 +205,19 @@
     }
 
     h1 {
-      font-family: 'Cascadia Code', 'CaskaydiaCove Nerd Font', 'Fira Code', monospace;
-      font-size: 2.8rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
       cursor: pointer;
       user-select: none;
       transition: all 0.3s ease;
       position: relative;
       display: inline-block;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+      line-height: 1.2;
     }
 
     /* Wave effect setup */
@@ -272,12 +276,14 @@
     }
 
     p {
-      margin-top: 1.2rem;
-      font-size: 1.1rem;
-      font-family: 'JetBrains Mono', monospace;
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      font-family: 'Press Start 2P', monospace;
       font-weight: 400;
       opacity: 0.9;
       animation: subtle-pulse 12s ease-in-out infinite;
+      letter-spacing: 0.05em;
+      line-height: 1.4;
     }
 
     @keyframes subtle-pulse {
@@ -311,9 +317,12 @@
       bottom: 10px;
       width: 100%;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.5rem;
       color: #666;
       z-index: 2;
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 0.05em;
+      line-height: 1.4;
     }
 
     /* Toggle Button */
@@ -378,14 +387,17 @@
 
     @media (max-width: 600px) {
       h1 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
       }
       p {
-        font-size: 1rem;
+        font-size: 0.6rem;
       }
       .icons a {
         font-size: 1.3rem;
         margin: 0 8px;
+      }
+      footer {
+        font-size: 0.4rem;
       }
     }
   </style>
