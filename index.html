@@ -119,54 +119,45 @@
       animation: move-vertical-reverse 12s linear infinite;
     }
 
-    html[data-theme="light"] .border-top,
-    html[data-theme="light"] .border-bottom {
-      background: linear-gradient(90deg,
-        transparent 0%,
-        transparent 30%,
-        #000 40%,
-        #000 60%,
-        transparent 70%,
+    /* Light theme borders */
+    [data-theme="light"] .border-top {
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        transparent 30%, 
+        #000 40%, 
+        #000 60%, 
+        transparent 70%, 
         transparent 100%) !important;
-      background-size: 300% 100% !important;
-      box-shadow: 0 0 8px 2px rgba(0,0,0,0.35);
-      animation: move-horizontal 12s linear infinite !important;
     }
-    html[data-theme="light"] .border-bottom {
-      background: linear-gradient(-90deg,
-        transparent 0%,
-        transparent 30%,
-        #000 40%,
-        #000 60%,
-        transparent 70%,
+
+    [data-theme="light"] .border-right {
+      background: linear-gradient(180deg, 
+        transparent 0%, 
+        transparent 30%, 
+        #000 40%, 
+        #000 60%, 
+        transparent 70%, 
         transparent 100%) !important;
-      background-size: 300% 100% !important;
-      box-shadow: 0 0 8px 2px rgba(0,0,0,0.35);
-      animation: move-horizontal-reverse 12s linear infinite !important;
     }
-    html[data-theme="light"] .border-right {
-      background: linear-gradient(180deg,
-        transparent 0%,
-        transparent 30%,
-        #000 40%,
-        #000 60%,
-        transparent 70%,
+
+    [data-theme="light"] .border-bottom {
+      background: linear-gradient(-90deg, 
+        transparent 0%, 
+        transparent 30%, 
+        #000 40%, 
+        #000 60%, 
+        transparent 70%, 
         transparent 100%) !important;
-      background-size: 100% 300% !important;
-      box-shadow: 0 0 8px 2px rgba(0,0,0,0.35);
-      animation: move-vertical 12s linear infinite !important;
     }
-    html[data-theme="light"] .border-left {
-      background: linear-gradient(-180deg,
-        transparent 0%,
-        transparent 30%,
-        #000 40%,
-        #000 60%,
-        transparent 70%,
+
+    [data-theme="light"] .border-left {
+      background: linear-gradient(-180deg, 
+        transparent 0%, 
+        transparent 30%, 
+        #000 40%, 
+        #000 60%, 
+        transparent 70%, 
         transparent 100%) !important;
-      background-size: 100% 300% !important;
-      box-shadow: 0 0 8px 2px rgba(0,0,0,0.35);
-      animation: move-vertical-reverse 12s linear infinite !important;
     }
 
     /* First line - no delays, continuous movement */
@@ -180,16 +171,6 @@
     .border-line-2.border-right { animation-delay: 9s; }
     .border-line-2.border-bottom { animation-delay: 0s; }
     .border-line-2.border-left { animation-delay: 3s; }
-
-    /* Animation delays for light theme */
-    html[data-theme="light"] .border-line-1.border-top { animation-delay: 0s !important; }
-    html[data-theme="light"] .border-line-1.border-right { animation-delay: 3s !important; }
-    html[data-theme="light"] .border-line-1.border-bottom { animation-delay: 6s !important; }
-    html[data-theme="light"] .border-line-1.border-left { animation-delay: 9s !important; }
-    html[data-theme="light"] .border-line-2.border-top { animation-delay: 6s !important; }
-    html[data-theme="light"] .border-line-2.border-right { animation-delay: 9s !important; }
-    html[data-theme="light"] .border-line-2.border-bottom { animation-delay: 0s !important; }
-    html[data-theme="light"] .border-line-2.border-left { animation-delay: 3s !important; }
 
     @keyframes move-horizontal {
       0% { background-position: -100% 0; }
@@ -227,63 +208,67 @@
       font-family: 'Cascadia Code', 'CaskaydiaCove Nerd Font', 'Fira Code', monospace;
       font-size: 2.8rem;
       font-weight: 600;
-      color: #fff;
-      text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 30px rgba(255, 255, 255, 0.4);
       letter-spacing: 0.08em;
-      animation: breathing 12s ease-in-out infinite;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
     }
 
-    [data-theme="light"] h1 {
-      color: #000;
+    /* Wave effect setup */
+    .wave-text {
+      background: linear-gradient(
+        90deg,
+        #fff 0%,
+        #fff 35%,
+        #000 50%,
+        #fff 65%,
+        #fff 100%
+      );
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: wave-effect 6s linear infinite;
       text-shadow: 
-        0 0 10px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(0, 0, 0, 0.6),
-        0 0 30px rgba(0, 0, 0, 0.4);
-    }
-
-    @keyframes breathing {
-      0%, 100% { 
-        transform: scale(1);
-      }
-      50% { 
-        transform: scale(1.05);
-      }
-    }
-
-    /* Dark theme breathing */
-    h1 {
-      text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.8),
         0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 30px rgba(255, 255, 255, 0.4);
+        0 0 40px rgba(255, 255, 255, 0.4),
+        0 0 60px rgba(255, 255, 255, 0.2);
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
     }
 
-    h1:hover, .breathing-glow {
+    [data-theme="light"] .wave-text {
+      background: linear-gradient(
+        90deg,
+        #000 0%,
+        #000 35%,
+        #fff 50%,
+        #000 65%,
+        #000 100%
+      );
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
       text-shadow: 
-        0 0 15px rgba(255, 255, 255, 1),
-        0 0 25px rgba(255, 255, 255, 0.8),
-        0 0 35px rgba(255, 255, 255, 0.6),
-        0 0 45px rgba(255, 255, 255, 0.4);
-    }
-
-    /* Light theme breathing */
-    [data-theme="light"] h1 {
-      text-shadow: 
-        0 0 10px rgba(0, 0, 0, 0.8),
         0 0 20px rgba(0, 0, 0, 0.6),
-        0 0 30px rgba(0, 0, 0, 0.4);
+        0 0 40px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(0, 0, 0, 0.2);
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
     }
 
-    [data-theme="light"] h1:hover,
-    [data-theme="light"] .breathing-glow {
-      text-shadow: 
-        0 0 15px rgba(0, 0, 0, 1),
-        0 0 25px rgba(0, 0, 0, 0.8),
-        0 0 35px rgba(0, 0, 0, 0.6),
-        0 0 45px rgba(0, 0, 0, 0.4);
+    @keyframes wave-effect {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+
+    h1:active {
+      transform: scale(0.98);
     }
 
     p {
@@ -425,11 +410,11 @@
   </button>
 
   <div class="container">
-    <h1>MiloHakai</h1>
-    <p>Occasional streamer and student from Italy.</p>
+    <h1 id="username" class="wave-text" onclick="playClickSound()">MiloHakai</h1>
+    <p>Student and occasional streamer from Italy.</p>
 
     <div class="icons">
-      <a href="https://discord.com/DjeweeUH4h" title="Discord" target="_blank"><i class="fab fa-discord"></i></a>
+      <a href="https://discord.com/users/379002314226401320/" title="Discord" target="_blank"><i class="fab fa-discord"></i></a>
       <a href="https://github.com/MiloHakai" title="GitHub" target="_blank"><i class="fab fa-github"></i></a>
       <a href="https://steamcommunity.com/id/5483625764" title="Steam" target="_blank"><i class="fab fa-steam"></i></a>
       <a href="https://twitch.tv/MiloHakai" title="Twitch" target="_blank"><i class="fab fa-twitch"></i></a>
@@ -437,8 +422,24 @@
   </div>
 
   <footer>
-    Copyright © 2025–present MiloHakai
+    Copyright © 2025–present MiloHakai | Heavily inspired by <a href="https://github.com/spectrapulse" target="_blank"> SpectraPulse</a>
   </footer>
+
+  <!-- Audio element for background music -->
+  <audio id="backgroundAudio" preload="auto" loop>
+    <source src="./background-music.flac" type="audio/flac">
+    <source src="./background-music.mp3" type="audio/mpeg">
+    <!-- Fallback message -->
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Audio element for click sound effect -->
+  <audio id="clickSound" preload="auto">
+    <source src="./click-sound.mp3" type="audio/mpeg">
+    <source src="./click-sound.ogg" type="audio/ogg">
+    <!-- Fallback message -->
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
     function toggleTheme() {
@@ -446,6 +447,48 @@
       const current = html.getAttribute("data-theme");
       html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
     }
+
+    // Function to play click sound
+    function playClickSound() {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0; // Reset to beginning in case it's already playing
+      clickSound.play().catch(error => {
+        console.log('Click sound could not be played:', error);
+      });
+    }
+
+    // Audio functionality for background music
+    const audio = document.getElementById('backgroundAudio');
+    
+    // Function to start background audio
+    function startBackgroundAudio() {
+      audio.play().catch(error => {
+        console.log('Audio autoplay prevented:', error);
+        // If autoplay fails, try again on next user interaction
+        document.addEventListener('click', function() {
+          if (audio.paused) {
+            audio.play().catch(err => console.log('Audio play failed:', err));
+          }
+        }, { once: true });
+      });
+    }
+
+    // Set audio volumes
+    audio.volume = 0.3; // Background music at 30%
+    const clickSound = document.getElementById('clickSound');
+    clickSound.volume = 0.5; // Click sound at 50%
+
+    // Start background music when page loads
+    window.addEventListener('load', () => {
+      startBackgroundAudio();
+    });
+
+    // Fallback: start audio on first user interaction
+    document.addEventListener('click', function() {
+      if (audio.paused) {
+        startBackgroundAudio();
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
