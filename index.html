@@ -295,6 +295,32 @@
       margin-top: 1.5rem;
     }
 
+    .click-counter {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .click-counter.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .click-counter p {
+      font-size: 0.6rem;
+      color: #00ff00;
+      margin: 0;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+      animation: none;
+    }
+
+    [data-theme="light"] .click-counter p {
+      color: #006600;
+      text-shadow: 0 0 10px rgba(0, 102, 0, 0.5);
+    }
+
     .icons a {
       margin: 0 10px;
       font-size: 1.5rem;
@@ -425,6 +451,10 @@
     <h1 id="username" class="wave-text" onclick="playClickSound()">MiloHakai</h1>
     <p>Student and occasional streamer from Italy.</p>
 
+    <div id="clickCounter" class="click-counter" style="display: none;">
+      <p>Hey! You clicked me <span id="clickCount">0</span> times.</p>
+    </div>
+
     <div class="icons">
       <a href="https://discord.com/users/379002314226401320/" title="Discord" target="_blank"><i class="fab fa-discord"></i></a>
       <a href="https://github.com/MiloHakai" title="GitHub" target="_blank"><i class="fab fa-github"></i></a>
@@ -435,7 +465,7 @@
 
   <footer>
     Copyright © 2025–present MiloHakai <br>
-    Heavily inspired by <a href="https://github.com/spectrapulse" target="_blank"> spectrapulse</a>
+    Heavily inspired by <a href="https://github.com/spectrapulse" target="_blank"> SpectraPulse</a>
   </footer>
 
   <!-- Audio element for background music -->
@@ -461,13 +491,30 @@
       html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
     }
 
-    // Function to play click sound
+    // Click counter functionality
+    let clickCount = 0;
+    const clickCounter = document.getElementById('clickCounter');
+    const clickCountSpan = document.getElementById('clickCount');
+
+    // Function to play click sound and update counter
     function playClickSound() {
       const clickSound = document.getElementById('clickSound');
       clickSound.currentTime = 0; // Reset to beginning in case it's already playing
       clickSound.play().catch(error => {
         console.log('Click sound could not be played:', error);
       });
+
+      // Update click counter
+      clickCount++;
+      clickCountSpan.textContent = clickCount;
+      
+      // Show the counter after first click
+      if (clickCount === 1) {
+        clickCounter.style.display = 'block';
+        setTimeout(() => {
+          clickCounter.classList.add('show');
+        }, 10);
+      }
     }
 
     // Audio functionality for background music
