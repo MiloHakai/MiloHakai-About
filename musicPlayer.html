@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
   <style>
     :root {
       --bg-dark: #0a0a0a;
@@ -282,34 +283,22 @@
     }
 
     .queue-item.current {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 5px;
-      margin: 2px;
+      background: none;
+      border: 2px solid #fff;
+      color: #fff;
       position: relative;
+      z-index: 1;
+      box-shadow: 0 0 8px 2px rgba(255,255,255,0.25);
+    }
+
+    [data-theme="light"] .queue-item.current {
+      border: 2px solid #000;
+      color: #000;
+      box-shadow: 0 0 8px 2px rgba(0,0,0,0.15);
     }
 
     .queue-item.current::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.8) 20%, 
-        rgba(255, 255, 255, 0.8) 80%, 
-        transparent 100%);
-      background-size: 200% 100%;
-      animation: queue-highlight 2s linear infinite;
-      border-radius: 5px;
-      z-index: -1;
-    }
-
-    @keyframes queue-highlight {
-      0% { background-position: -100% 0; }
-      100% { background-position: 200% 0; }
+      display: none !important;
     }
 
     [data-theme="light"] .queue-item {
@@ -605,6 +594,7 @@
 
     /* Audio Controls - Fixed at bottom without background */
     .audio-controls {
+      
       position: fixed;
       bottom: 40px;
       right: 50%;
@@ -751,17 +741,18 @@
       border-radius: 2px;
       outline: none;
       cursor: pointer;
-      -webkit-appearance: none;
+      -webkit-appearance: none; /* FIX: put here, not on thumb */
+      appearance: none;
     }
 
     .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
       width: 16px;
       height: 16px;
       background: #fff;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      /* -webkit-appearance: none; <-- REMOVE this line */
     }
 
     .volume-slider::-moz-range-thumb {
@@ -1190,7 +1181,7 @@
       .lyrics-section {
         bottom: 120px;
         right: 20px;
-        left: auto;
+        left: 20px;
         max-width: 250px;
         max-height: 100px;
       }
@@ -1279,7 +1270,7 @@
     <div class="left-section">
       <div class="title-section">
         <h1 class="main-title">MiloHakai</h1>
-        <p class="subtitle">Welcome to the music spot</p>
+        <p class="subtitle">A web-based media player!</p>
       </div>
       
       <div class="queue-section">
@@ -1314,10 +1305,15 @@
 
   <div class="audio-controls">
     <div class="file-input-wrapper">
-      <input type="file" id="audioFile" accept="audio/*" multiple>
+      <input type="file" id="audioFile" multiple accept="audio/*">
       <label for="audioFile" class="file-input-label">
-        <i class="fas fa-upload"></i>
-        Select Audio Files
+          <i class="fas fa-music"></i>
+          Upload Songs
+      </label>
+      <input type="file" id="lrcFile" accept=".lrc">
+      <label for="lrcFile" class="file-input-label">
+        <i class="fas fa-file-alt"></i>
+        Upload LRC Lyrics
       </label>
     </div>
     
@@ -1348,7 +1344,7 @@
   <audio id="audio" style="display: none;"></audio>
 
   <script>
-    // Theme toggle functionality
+    // --- Theme Toggle ---
     function toggleTheme() {
       const html = document.documentElement;
       const current = html.getAttribute("data-theme");
@@ -1356,7 +1352,7 @@
       updateVisualizerColors();
     }
 
-    // Three.js setup
+    // --- Three.js Setup ---
     let scene, camera, renderer, sphere, analyser, dataArray, bufferLength;
     let audioContext, source, isPlaying = false, animationId;
     let playlist = [];
@@ -1372,147 +1368,7 @@
     const playlistContainer = document.getElementById('playlist');
     const volumeSlider = document.getElementById('volumeSlider');
 
-    function initThreeJS() {
-      const container = document.getElementById('threejs-container');
-      
-      // Scene setup
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(400, 400);
-      renderer.setClearColor(0x000000, 0);
-      container.appendChild(renderer.domElement);
-
-      // Create sphere geometry with more segments for smoother appearance
-      const geometry = new THREE.SphereGeometry(1, 64, 32);
-      
-      // Create material
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.7
-      });
-      
-      sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
-
-      // Position camera
-      camera.position.z = 3;
-
-      // Start render loop
-      animate();
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      if (sphere) {
-        sphere.rotation.x += 0.005;
-        sphere.rotation.y += 0.01;
-        
-        if (isPlaying && analyser && dataArray) {
-          analyser.getByteFrequencyData(dataArray);
-          updateSphereVisualization();
-        }
-      }
-      
-      renderer.render(scene, camera);
-    }
-
-    function updateSphereVisualization() {
-      if (!sphere || !dataArray) return;
-      
-      const geometry = sphere.geometry;
-      const positions = geometry.attributes.position;
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      
-      // Calculate average amplitude for base scale
-      let avgAmplitude = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        avgAmplitude += dataArray[i];
-      }
-      avgAmplitude = avgAmplitude / dataArray.length / 255;
-      
-      // Modify sphere vertices based on audio data
-      for (let i = 0; i < positions.count; i++) {
-        const vertex = new THREE.Vector3();
-        vertex.fromBufferAttribute(positions, i);
-        
-        // Get frequency data index based on vertex position
-        const freq = Math.floor((i / positions.count) * dataArray.length);
-        const amplitude = dataArray[freq] / 255;
-        
-        // Calculate displacement
-        const displacement = 1 + (amplitude * 0.3) + (avgAmplitude * 0.2);
-        vertex.normalize().multiplyScalar(displacement);
-        
-        positions.setXYZ(i, vertex.x, vertex.y, vertex.z);
-      }
-      
-      positions.needsUpdate = true;
-      
-      // Keep sphere color consistent with theme (white/black)
-      sphere.material.color.setHex(isDark ? 0xffffff : 0x000000);
-      sphere.material.opacity = 0.7 + avgAmplitude * 0.3;
-    }
-
-    function updateVisualizerColors() {
-      if (sphere) {
-        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-        sphere.material.color.setHex(isDark ? 0xffffff : 0x000000);
-      }
-    }
-
-    // Audio setup
-    function initAudioContext() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        
-        analyser.fftSize = 512;
-        bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-      }
-    }
-
-    // Parse filename to extract song name and artist
-    function parseFilename(filename) {
-      // Remove file extension
-      const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
-      
-      // Common patterns for song files: "Artist - Song", "Song - Artist", "Artist_Song", etc.
-      const patterns = [
-        /^(.+?)\s*-\s*(.+)$/,  // "Artist - Song" or "Song - Artist"
-        /^(.+?)\s*_\s*(.+)$/,  // "Artist_Song"
-        /^(.+?)\s*\|\s*(.+)$/,  // "Artist | Song"
-        /^(.+?)\s*\[\s*(.+?)\s*\]$/,  // "Song [Artist]"
-        /^(.+?)\s*\(\s*(.+?)\s*\)$/,  // "Song (Artist)"
-      ];
-      
-      for (let pattern of patterns) {
-        const match = nameWithoutExt.match(pattern);
-        if (match) {
-          // Try to determine which is artist and which is song
-          // Usually the longer one is the song title
-          const part1 = match[1].trim();
-          const part2 = match[2].trim();
-          
-          if (part1.length > part2.length) {
-            return { song: part1, artist: part2 };
-          } else {
-            return { song: part2, artist: part1 };
-          }
-        }
-      }
-      
-      // If no pattern matches, treat entire filename as song name
-      return { song: nameWithoutExt, artist: "" };
-    }
-    // Playlist management
+    // --- Playlist Management ---
     function addToPlaylist(files) {
       for (let file of files) {
         const parsed = parseFilename(file.name);
@@ -1524,21 +1380,284 @@
         };
         playlist.push(track);
       }
-      updatePlaylistDisplay();
+      updateControlButtons();
+      updateQueueDisplay();
+
+      if (playlist.length > 0 && (!audio.src || audio.paused)) {
+        playTrack(0);
+      }
+    }
+
+    prevButton.addEventListener('click', function() {
+      if (playlist.length > 1) {
+        let prev = currentTrackIndex - 1;
+        if (prev < 0) prev = playlist.length - 1;
+        playTrack(prev);
+      }
+    });
+
+    nextButton.addEventListener('click', function() {
+      if (playlist.length > 1) {
+        let next = currentTrackIndex + 1;
+        if (next >= playlist.length) next = 0;
+        playTrack(next);
+      }
+    });
+
+    playButton.addEventListener('click', function() {
+      if (!isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('play', function() {
+      isPlaying = true;
+      playIcon.classList.remove('fa-play');
+      playIcon.classList.add('fa-pause');
+    });
+    audio.addEventListener('pause', function() {
+      isPlaying = false;
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+    });
+    audio.addEventListener('ended', function() {
+      if (playlist.length > 1) {
+        let next = currentTrackIndex + 1;
+        if (next >= playlist.length) next = 0; // Loop to start
+        playTrack(next);
+      }
+    });
+
+    function updateControlButtons() {
+      playButton.disabled = playlist.length === 0;
+      prevButton.disabled = playlist.length <= 1;
+      nextButton.disabled = playlist.length <= 1;
+    }
+
+    // --- Play/Pause Button Logic ---
+    playButton.addEventListener('click', function() {
+      if (!isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('play', function() {
+      isPlaying = true;
+      playIcon.classList.remove('fa-play');
+      playIcon.classList.add('fa-pause');
+    });
+    audio.addEventListener('pause', function() {
+      isPlaying = false;
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+    });
+
+    // --- Audio File Upload Handler ---
+    audioFileInput.addEventListener('change', function(e) {
+      addToPlaylist(Array.from(e.target.files));
+    });
+
+    // --- Volume Control ---
+    volumeSlider.addEventListener('input', function() {
+      audio.volume = volumeSlider.value / 100;
+    });
+
+    // --- LRC Lyrics Handling ---
+    let lrcMap = {}; // { songName: [ { time: seconds, text: line }, ... ] }
+    let currentLrcLines = null;
+    let currentLrcIndex = -1;
+
+    function parseLRC(lrcText) {
+      const lines = lrcText.split(/\r?\n/);
+      const result = [];
+      const timeTag = /\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g;
+      for (let line of lines) {
+        let match;
+        let times = [];
+        while ((match = timeTag.exec(line)) !== null) {
+          const min = parseInt(match[1], 10);
+          const sec = parseInt(match[2], 10);
+          const ms = match[3] ? parseInt(match[3].padEnd(3, '0'), 10) : 0;
+          times.push(min * 60 + sec + ms / 1000);
+        }
+        const text = line.replace(timeTag, '').trim();
+        times.forEach(time => {
+          result.push({ time, text });
+        });
+      }
+      return result
+        .filter(l => l.text)
+        .sort((a, b) => a.time - b.time);
+    }
+
+    const lrcFileInput = document.getElementById('lrcFile');
+    lrcFileInput.setAttribute('multiple', 'multiple');
+    lrcFileInput.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const name = file.name.replace(/\.[^/.]+$/, '').trim().toLowerCase();
+          lrcMap[name] = parseLRC(evt.target.result);
+        };
+        reader.readAsText(file, 'utf-8');
+      });
+    });
+
+    function getLrcForSong(songName, artist) {
+      if (!songName) return null;
+      const normalize = str => str ? str.replace(/\s+/g, '').toLowerCase() : '';
+      const songKey = normalize(songName);
+      const artistKey = normalize(artist);
+
+      // Try song + artist
+      for (const key in lrcMap) {
+        if (normalize(key) === songKey || normalize(key) === songKey + artistKey || normalize(key) === artistKey + songKey) {
+          return lrcMap[key];
+        }
+      }
+      // Try partial match
+      for (const key in lrcMap) {
+        if (normalize(key).includes(songKey)) {
+          return lrcMap[key];
+        }
+      }
+      return null;
+    }
+
+    function showSyncedLyrics(lrcLines) {
+      currentLrcLines = lrcLines;
+      currentLrcIndex = -1;
+      updateSyncedLyrics(0);
+      document.getElementById('lyricsSection').style.display = 'block';
+    }
+
+    function updateSyncedLyrics(currentTime) {
+      if (!currentLrcLines) return;
+      let idx = 0;
+      while (idx < currentLrcLines.length - 1 && currentTime >= currentLrcLines[idx + 1].time) {
+        idx++;
+      }
+      if (idx !== currentLrcIndex) {
+        currentLrcIndex = idx;
+        const lyricsContainer = document.getElementById('lyricsContainer');
+        let html = '';
+        if (currentLrcLines[idx - 1]) {
+          html += `<div style="opacity:0.5;font-size:0.9em;">${currentLrcLines[idx - 1].text}</div>`;
+        }
+        html += `<div style="font-size:1.2em;font-weight:bold;transition:color 0.3s;color:#00ff99;">${currentLrcLines[idx].text}</div>`;
+        if (currentLrcLines[idx + 1]) {
+          html += `<div style="opacity:0.5;font-size:0.9em;">${currentLrcLines[idx + 1].text}</div>`;
+        }
+        lyricsContainer.innerHTML = html;
+      }
+    }
+
+    audio.addEventListener('timeupdate', function() {
+      if (currentLrcLines) {
+        updateSyncedLyrics(audio.currentTime);
+      }
+    });
+
+    // --- Lyrics Extraction and Fallback ---
+    async function extractLyrics(file) {
+      return new Promise((resolve) => {
+        window.jsmediatags.read(file, {
+          onSuccess: function(tag) {
+            if (tag.tags.USLT && tag.tags.USLT.data) {
+              resolve(tag.tags.USLT.data);
+            } else if (tag.tags.LYRICS) {
+              resolve(tag.tags.LYRICS);
+            } else {
+              resolve(null);
+            }
+          },
+          onError: function() {
+            resolve(null);
+          }
+        });
+      });
+    }
+
+    function updateLyricsDisplay(lyrics) {
+      const lyricsSection = document.getElementById('lyricsSection');
+      const lyricsContainer = document.getElementById('lyricsContainer');
+      if (lyrics && lyrics.length > 0) {
+        lyricsContainer.innerHTML = lyrics.replace(/\n/g, '<br>');
+        lyricsSection.style.display = 'block';
+      } else {
+        lyricsContainer.innerHTML = '<div class="no-lyrics">(. _.)</div>';
+        lyricsSection.style.display = 'block';
+      }
+    }
+
+    // --- Play Track ---
+    function playTrack(index) {
+      if (index < 0 || index >= playlist.length) return;
+
+      currentTrackIndex = index;
+      const track = playlist[currentTrackIndex];
+      audio.src = track.url;
+      
+      songTitle.innerHTML = `
+        <div class="song-name">${track.song}</div>
+        ${track.artist ? `<div class="artist-name">${track.artist}</div>` : ''}
+      `;
+      // ...lyrics logic...
+      const lrcLines = getLrcForSong(track.song, track.artist);
+      if (lrcLines) {
+        showSyncedLyrics(lrcLines);
+      } else {
+        updateLyricsDisplay('');
+      }
+
+      updateQueueDisplay();
+
+      if (!audioContext) {
+        initAudioContext();
+      }
+      audio.play().catch(err => {
+        console.error("Error playing audio:", err);
+      });
       updateControlButtons();
     }
 
+    // --- Playlist Display (right side) ---
+    function updatePlaylistDisplay() {
+      playlistContainer.innerHTML = '';
+      if (playlist.length === 0) {
+        playlistContainer.style.display = 'none';
+        return;
+      }
+      playlistContainer.style.display = 'block';
+      playlist.forEach((track, index) => {
+        const item = document.createElement('div');
+        item.className = `playlist-item ${index === currentTrackIndex ? 'current' : ''}`;
+        item.innerHTML = `
+          <i class="fas fa-music"></i>
+          <div>
+            <div class="song-name">${track.song}</div>
+            ${track.artist ? `<div class="artist-name">${track.artist}</div>` : ''}
+          </div>
+        `;
+        item.onclick = () => playTrack(index);
+        playlistContainer.appendChild(item);
+      });
+    }
+
+    // --- Queue Display (left side) ---
     function updateQueueDisplay() {
       const queueContainer = document.getElementById('queueContainer');
-      
       if (playlist.length === 0) {
         queueContainer.style.display = 'none';
         return;
       }
-      
       queueContainer.style.display = 'block';
       queueContainer.innerHTML = '';
-      
       playlist.forEach((track, index) => {
         const item = document.createElement('div');
         item.className = `queue-item ${index === currentTrackIndex ? 'current' : ''}`;
@@ -1554,181 +1673,104 @@
       });
     }
 
-    function updatePlaylistDisplay() {
-      updateQueueDisplay(); // Update the queue on the left
-      
-      // Hide the old playlist container since we're using the queue now
-      const playlistContainer = document.getElementById('playlist');
-      playlistContainer.style.display = 'none';
-    }
+    // --- Three.js Visualizer ---
+    function initThreeJS() {
+      const container = document.getElementById('threejs-container');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(400, 400);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
 
-    async function extractLyrics(file) {
-      try {
-        // Try to read ID3 tags using a simple approach
-        const arrayBuffer = await file.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        
-        // Look for USLT (Unsynchronised Lyrics) frame in ID3v2
-        const decoder = new TextDecoder('utf-8');
-        const fileStr = decoder.decode(uint8Array);
-        
-        // Simple search for common lyrics patterns
-        const lyricsPatterns = [
-          /USLT.*?\x00(.*?)(?=\x00{4}|\x00ID3|$)/s,
-          /LYRICS.*?\x00(.*?)(?=\x00{4}|\x00ID3|$)/s,
-          /lyrics.*?\x00(.*?)(?=\x00{4}|\x00ID3|$)/si
-        ];
-        
-        for (let pattern of lyricsPatterns) {
-          const match = fileStr.match(pattern);
-          if (match && match[1] && match[1].trim().length > 10) {
-            return match[1].trim().replace(/\x00/g, '').replace(/\r\n/g, '\n');
-          }
-        }
-        
-        return null;
-      } catch (error) {
-        return null;
-      }
-    }
-
-    function updateLyricsDisplay(lyrics) {
-      const lyricsSection = document.getElementById('lyricsSection');
-      const lyricsContainer = document.getElementById('lyricsContainer');
-      
-      if (lyrics && lyrics.length > 0) {
-        lyricsContainer.innerHTML = lyrics.replace(/\n/g, '<br>');
-        lyricsSection.style.display = 'block';
-      } else {
-        lyricsContainer.innerHTML = '<div class="no-lyrics">(. _.)</div>';
-        lyricsSection.style.display = 'block';
-      }
-    }
-
-    function playTrack(index) {
-      if (index < 0 || index >= playlist.length) return;
-      
-      currentTrackIndex = index;
-      const track = playlist[currentTrackIndex];
-      
-      audio.src = track.url;
-      
-      // Update song title display
-      const songTitleElement = document.getElementById('songTitle');
-      songTitleElement.innerHTML = `
-        <div class="song-name">${track.song}</div>
-        ${track.artist ? `<div class="artist-name">${track.artist}</div>` : ''}
-      `;
-      
-      // Extract and display lyrics
-      extractLyrics(track.file).then(lyrics => {
-        updateLyricsDisplay(lyrics);
+      const geometry = new THREE.SphereGeometry(1, 64, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.7
       });
-      
-      updatePlaylistDisplay();
-      
-      if (!audioContext) {
-        initAudioContext();
-      }
-      
-      if (isPlaying) {
-        audio.play();
-      }
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+      camera.position.z = 3;
+      animate();
     }
 
-    function updateControlButtons() {
-      const hasPlaylist = playlist.length > 0;
-      playButton.disabled = !hasPlaylist;
-      prevButton.disabled = !hasPlaylist || currentTrackIndex === 0;
-      nextButton.disabled = !hasPlaylist || currentTrackIndex === playlist.length - 1;
-    }
-
-    // Event listeners
-    audioFileInput.addEventListener('change', function(e) {
-      if (e.target.files.length > 0) {
-        addToPlaylist(e.target.files);
-        if (playlist.length === e.target.files.length) {
-          // First time adding files, load the first track
-          playTrack(0);
+    function animate() {
+      requestAnimationFrame(animate);
+      if (sphere) {
+        sphere.rotation.x += 0.005;
+        sphere.rotation.y += 0.01;
+        if (isPlaying && analyser && dataArray) {
+          analyser.getByteFrequencyData(dataArray);
+          updateSphereVisualization();
         }
       }
-    });
+      renderer.render(scene, camera);
+    }
 
-    playButton.addEventListener('click', function() {
-      if (playlist.length === 0) return;
-      
-      if (!audioContext) {
-        initAudioContext();
+    function updateSphereVisualization() {
+      if (!sphere || !dataArray) return;
+      const geometry = sphere.geometry;
+      const positions = geometry.attributes.position;
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      let avgAmplitude = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        avgAmplitude += dataArray[i];
       }
-      
-      if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-      } else {
-        audio.play();
-        isPlaying = true;
+      avgAmplitude = avgAmplitude / dataArray.length / 255;
+      for (let i = 0; i < positions.count; i++) {
+        const vertex = new THREE.Vector3();
+        vertex.fromBufferAttribute(positions, i);
+        const freq = Math.floor((i / positions.count) * dataArray.length);
+        const amplitude = dataArray[freq] / 255;
+        const displacement = 1 + (amplitude * 0.3) + (avgAmplitude * 0.2);
+        vertex.normalize().multiplyScalar(displacement);
+        positions.setXYZ(i, vertex.x, vertex.y, vertex.z);
       }
-      updatePlayButton();
-    });
+      positions.needsUpdate = true;
+      sphere.material.color.setHex(isDark ? 0xffffff : 0x000000);
+      sphere.material.opacity = 0.7 + avgAmplitude * 0.3;
+    }
 
-    prevButton.addEventListener('click', function() {
-      if (currentTrackIndex > 0) {
-        playTrack(currentTrackIndex - 1);
-      }
-    });
-
-    nextButton.addEventListener('click', function() {
-      if (currentTrackIndex < playlist.length - 1) {
-        playTrack(currentTrackIndex + 1);
-      }
-    });
-
-    volumeSlider.addEventListener('input', function() {
-      audio.volume = this.value / 100;
-    });
-
-    audio.addEventListener('play', function() {
-      isPlaying = true;
-      updatePlayButton();
-    });
-
-    audio.addEventListener('pause', function() {
-      isPlaying = false;
-      updatePlayButton();
-    });
-
-    audio.addEventListener('ended', function() {
-      isPlaying = false;
-      updatePlayButton();
-      
-      // Auto-play next track if available
-      if (currentTrackIndex < playlist.length - 1) {
-        playTrack(currentTrackIndex + 1);
-        setTimeout(() => {
-          if (!isPlaying) {
-            audio.play();
-          }
-        }, 100);
-      }
-    });
-
-    function updatePlayButton() {
-      if (isPlaying) {
-        playIcon.className = 'fas fa-pause';
-      } else {
-        playIcon.className = 'fas fa-play';
+    function updateVisualizerColors() {
+      if (sphere) {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        sphere.material.color.setHex(isDark ? 0xffffff : 0x000000);
       }
     }
 
-    // Initialize Three.js when page loads
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 512;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+      }
+    }
+
+    function parseFilename(filename) {
+      // Example: "Artist - Song.mp3" or just "Song.mp3"
+      let name = filename.replace(/\.[^/.]+$/, "");
+      let [artist, ...songParts] = name.split(" - ");
+      if (songParts.length > 0) {
+        return { artist: artist.trim(), song: songParts.join(" - ").trim() };
+      } else {
+        return { artist: "", song: name.trim() };
+      }
+    }
+
+    // --- Window Events ---
     window.addEventListener('load', function() {
       initThreeJS();
-      
-      // Set initial volume
       audio.volume = 0.5;
+      updateControlButtons();
     });
 
-    // Handle window resize
     window.addEventListener('resize', function() {
       if (renderer && camera) {
         const container = document.getElementById('threejs-container');
@@ -1739,12 +1781,12 @@
       }
     });
 
-    // Cleanup URLs when page unloads
     window.addEventListener('beforeunload', function() {
       playlist.forEach(track => {
         URL.revokeObjectURL(track.url);
       });
     });
+    
   </script>
 </body>
 </html>
