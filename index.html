@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MiloHakai</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    
     :root {
       --bg-dark: #0a0a0a;
       --bg-light: #fdfdfd;
@@ -19,7 +20,8 @@
       --glow-color-light: rgba(0, 0, 0, 0.8);
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       height: 100%;
       font-family: 'Press Start 2P', monospace;
@@ -50,7 +52,10 @@
     }
 
     /* Border line animations */
-    .border-top, .border-right, .border-bottom, .border-left {
+    .border-top,
+    .border-right,
+    .border-bottom,
+    .border-left {
       position: absolute;
     }
 
@@ -60,13 +65,13 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #fff 40%, 
-        #fff 60%, 
-        transparent 70%, 
-        transparent 100%);
+      background: linear-gradient(90deg,
+          transparent 0%,
+          transparent 30%,
+          #fff 40%,
+          #fff 60%,
+          transparent 70%,
+          transparent 100%);
       background-size: 300% 100%;
       animation: move-horizontal 12s linear infinite;
     }
@@ -76,13 +81,13 @@
       right: 0;
       bottom: 0;
       width: 2px;
-      background: linear-gradient(180deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #fff 40%, 
-        #fff 60%, 
-        transparent 70%, 
-        transparent 100%);
+      background: linear-gradient(180deg,
+          transparent 0%,
+          transparent 30%,
+          #fff 40%,
+          #fff 60%,
+          transparent 70%,
+          transparent 100%);
       background-size: 100% 300%;
       animation: move-vertical 12s linear infinite;
     }
@@ -92,13 +97,13 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(-90deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #fff 40%, 
-        #fff 60%, 
-        transparent 70%, 
-        transparent 100%);
+      background: linear-gradient(-90deg,
+          transparent 0%,
+          transparent 30%,
+          #fff 40%,
+          #fff 60%,
+          transparent 70%,
+          transparent 100%);
       background-size: 300% 100%;
       animation: move-horizontal-reverse 12s linear infinite;
     }
@@ -108,88 +113,130 @@
       left: 0;
       bottom: 0;
       width: 2px;
-      background: linear-gradient(-180deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #fff 40%, 
-        #fff 60%, 
-        transparent 70%, 
-        transparent 100%);
+      background: linear-gradient(-180deg,
+          transparent 0%,
+          transparent 30%,
+          #fff 40%,
+          #fff 60%,
+          transparent 70%,
+          transparent 100%);
       background-size: 100% 300%;
       animation: move-vertical-reverse 12s linear infinite;
     }
 
     /* Light theme borders */
     [data-theme="light"] .border-top {
-      background: linear-gradient(90deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #000 40%, 
-        #000 60%, 
-        transparent 70%, 
-        transparent 100%) !important;
+      background: linear-gradient(90deg,
+          transparent 0%,
+          transparent 30%,
+          #000 40%,
+          #000 60%,
+          transparent 70%,
+          transparent 100%) !important;
     }
 
     [data-theme="light"] .border-right {
-      background: linear-gradient(180deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #000 40%, 
-        #000 60%, 
-        transparent 70%, 
-        transparent 100%) !important;
+      background: linear-gradient(180deg,
+          transparent 0%,
+          transparent 30%,
+          #000 40%,
+          #000 60%,
+          transparent 70%,
+          transparent 100%) !important;
     }
 
     [data-theme="light"] .border-bottom {
-      background: linear-gradient(-90deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #000 40%, 
-        #000 60%, 
-        transparent 70%, 
-        transparent 100%) !important;
+      background: linear-gradient(-90deg,
+          transparent 0%,
+          transparent 30%,
+          #000 40%,
+          #000 60%,
+          transparent 70%,
+          transparent 100%) !important;
     }
 
     [data-theme="light"] .border-left {
-      background: linear-gradient(-180deg, 
-        transparent 0%, 
-        transparent 30%, 
-        #000 40%, 
-        #000 60%, 
-        transparent 70%, 
-        transparent 100%) !important;
+      background: linear-gradient(-180deg,
+          transparent 0%,
+          transparent 30%,
+          #000 40%,
+          #000 60%,
+          transparent 70%,
+          transparent 100%) !important;
     }
 
     /* First line - no delays, continuous movement */
-    .border-line-1.border-top { animation-delay: 0s; }
-    .border-line-1.border-right { animation-delay: 3s; }
-    .border-line-1.border-bottom { animation-delay: 6s; }
-    .border-line-1.border-left { animation-delay: 9s; }
+    .border-line-1.border-top {
+      animation-delay: 0s;
+    }
+
+    .border-line-1.border-right {
+      animation-delay: 3s;
+    }
+
+    .border-line-1.border-bottom {
+      animation-delay: 6s;
+    }
+
+    .border-line-1.border-left {
+      animation-delay: 9s;
+    }
 
     /* Second line - offset by 6s (half cycle) */
-    .border-line-2.border-top { animation-delay: 6s; }
-    .border-line-2.border-right { animation-delay: 9s; }
-    .border-line-2.border-bottom { animation-delay: 0s; }
-    .border-line-2.border-left { animation-delay: 3s; }
+    .border-line-2.border-top {
+      animation-delay: 6s;
+    }
+
+    .border-line-2.border-right {
+      animation-delay: 9s;
+    }
+
+    .border-line-2.border-bottom {
+      animation-delay: 0s;
+    }
+
+    .border-line-2.border-left {
+      animation-delay: 3s;
+    }
 
     @keyframes move-horizontal {
-      0% { background-position: -100% 0; }
-      100% { background-position: 200% 0; }
+      0% {
+        background-position: -100% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
     }
 
     @keyframes move-horizontal-reverse {
-      0% { background-position: 200% 0; }
-      100% { background-position: -100% 0; }
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -100% 0;
+      }
     }
 
     @keyframes move-vertical {
-      0% { background-position: 0 -100%; }
-      100% { background-position: 0 200%; }
+      0% {
+        background-position: 0 -100%;
+      }
+
+      100% {
+        background-position: 0 200%;
+      }
     }
 
     @keyframes move-vertical-reverse {
-      0% { background-position: 0 200%; }
-      100% { background-position: 0 -100%; }
+      0% {
+        background-position: 0 200%;
+      }
+
+      100% {
+        background-position: 0 -100%;
+      }
     }
 
     .container {
@@ -222,20 +269,18 @@
 
     /* Wave effect setup */
     .wave-text {
-      background: linear-gradient(
-        90deg,
-        #fff 0%,
-        #fff 35%,
-        #000 50%,
-        #fff 65%,
-        #fff 100%
-      );
+      background: linear-gradient(90deg,
+          #fff 0%,
+          #fff 35%,
+          #000 50%,
+          #fff 65%,
+          #fff 100%);
       background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: wave-effect 6s linear infinite;
-      text-shadow: 
+      text-shadow:
         0 0 20px rgba(255, 255, 255, 0.6),
         0 0 40px rgba(255, 255, 255, 0.4),
         0 0 60px rgba(255, 255, 255, 0.2);
@@ -243,19 +288,17 @@
     }
 
     [data-theme="light"] .wave-text {
-      background: linear-gradient(
-        90deg,
-        #000 0%,
-        #000 35%,
-        #fff 50%,
-        #000 65%,
-        #000 100%
-      );
+      background: linear-gradient(90deg,
+          #000 0%,
+          #000 35%,
+          #fff 50%,
+          #000 65%,
+          #000 100%);
       background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 
+      text-shadow:
         0 0 20px rgba(0, 0, 0, 0.6),
         0 0 40px rgba(0, 0, 0, 0.4),
         0 0 60px rgba(0, 0, 0, 0.2);
@@ -266,6 +309,7 @@
       0% {
         background-position: 200% 0;
       }
+
       100% {
         background-position: -100% 0;
       }
@@ -287,8 +331,15 @@
     }
 
     @keyframes subtle-pulse {
-      0%, 100% { opacity: 0.9; }
-      50% { opacity: 1; }
+
+      0%,
+      100% {
+        opacity: 0.9;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     .icons {
@@ -415,19 +466,23 @@
       h1 {
         font-size: 1.5rem;
       }
+
       p {
         font-size: 0.6rem;
       }
+
       .icons a {
         font-size: 1.3rem;
         margin: 0 8px;
       }
+
       footer {
         font-size: 0.4rem;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Animated Border Lines -->
@@ -456,7 +511,8 @@
     </div>
 
     <div class="icons">
-      <a href="https://discord.com/users/379002314226401320/" title="Discord" target="_blank"><i class="fab fa-discord"></i></a>
+      <a href="https://discord.com/users/379002314226401320/" title="Discord" target="_blank"><i
+          class="fab fa-discord"></i></a>
       <a href="https://github.com/MiloHakai" title="GitHub" target="_blank"><i class="fab fa-github"></i></a>
       <a href="https://steamcommunity.com/id/5483625764" title="Steam" target="_blank"><i class="fab fa-steam"></i></a>
       <a href="https://twitch.tv/MiloHakai" title="Twitch" target="_blank"><i class="fab fa-twitch"></i></a>
@@ -507,7 +563,7 @@
       // Update click counter
       clickCount++;
       clickCountSpan.textContent = clickCount;
-      
+
       // Show the counter after first click
       if (clickCount === 1) {
         clickCounter.style.display = 'block';
@@ -519,17 +575,19 @@
 
     // Audio functionality for background music
     const audio = document.getElementById('backgroundAudio');
-    
+
     // Function to start background audio
     function startBackgroundAudio() {
       audio.play().catch(error => {
         console.log('Audio autoplay prevented:', error);
         // If autoplay fails, try again on next user interaction
-        document.addEventListener('click', function() {
+        document.addEventListener('click', function () {
           if (audio.paused) {
             audio.play().catch(err => console.log('Audio play failed:', err));
           }
-        }, { once: true });
+        }, {
+          once: true
+        });
       });
     }
 
@@ -544,11 +602,14 @@
     });
 
     // Fallback: start audio on first user interaction
-    document.addEventListener('click', function() {
+    document.addEventListener('click', function () {
       if (audio.paused) {
         startBackgroundAudio();
       }
-    }, { once: true });
+    }, {
+      once: true
+    });
   </script>
 </body>
+
 </html>
